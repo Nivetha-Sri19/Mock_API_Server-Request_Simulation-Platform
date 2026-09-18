@@ -1,0 +1,3 @@
+import { Box, Typography } from "@mui/material";
+function Mark(){return <Box component="svg" viewBox="0 0 24 24" sx={{width:24,height:24,display:"block",fill:"none",stroke:"currentColor",strokeWidth:2,strokeLinecap:"round",strokeLinejoin:"round"}}><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></Box>}
+export default function Logo(){return <Box sx={{display:"flex",alignItems:"center",gap:1.2}}><Box sx={{width:40,height:40,borderRadius:1.8,display:"grid",placeItems:"center",bgcolor:"primary.main",color:"#071000"}}><Mark/></Box><Box><Typography sx={{fontWeight:950,fontSize:17,lineHeight:1,letterSpacing:"-.04em"}}>API SIMULATOR</Typography><Typography sx={{fontSize:8,fontWeight:800,color:"text.secondary",letterSpacing:".16em",mt:.5}}>API SIMULATION</Typography></Box></Box>}

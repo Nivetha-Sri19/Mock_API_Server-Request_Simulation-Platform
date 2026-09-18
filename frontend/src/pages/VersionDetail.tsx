@@ -1,0 +1,12 @@
+import { useEffect, useState } from "react";
+import { Alert, Box, Button, Card, CardContent, Chip, Divider, Tab, Tabs, Typography } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
+import { mockApi, versionApi } from "../api";
+import type { APIVersion, MockAPI } from "../types";
+import { getErrorMessage } from "../utils";
+import PageHeader from "../components/PageHeader";
+import ContractEditor from "../components/ContractEditor";
+import ScenarioEditor from "../components/ScenarioEditor";
+import PermissionManager from "../components/PermissionManager";
+import LogsTable from "../components/LogsTable";
+export default function VersionDetail(){const {id="",versionId=""}=useParams();const nav=useNavigate();const [api,setApi]=useState<MockAPI|null>(null);const [version,setVersion]=useState<APIVersion|null>(null);const [tab,setTab]=useState(0);const [error,setError]=useState("");useEffect(()=>{const load=async()=>{try{const [a,v]=await Promise.all([mockApi.get(id),versionApi.get(id,versionId)]);setApi(a.data);setVersion(v.data)}catch(e){setError(getErrorMessage(e))}};void load()},[id,versionId]);if(error&&!api)return <Box sx={{p:5}}><Alert severity="error">{error}</Alert></Box>;if(!api||!version)return <Box sx={{p:5}}>Loading…</Box>;return <Box sx={{p:{xs:2.5,md:5}}}><PageHeader eyebrow="MOCKPILOT / VERSION STUDIO" title={`${api.name} · ${version.version}`} subtitle={`${api.http_method} /mock${api.base_path} · all configuration below is persisted through the FastAPI backend.`} action={<Button onClick={()=>nav(`/apis/${id}`)}>Back to API</Button>}/>{error&&<Alert severity="warning" sx={{mb:2}}>{error}</Alert>}<Box sx={{display:"flex",gap:1,mb:2,flexWrap:"wrap"}}><Chip label={version.is_active?"ACTIVE":"INACTIVE"} color={version.is_active?"success":"default"} variant="outlined"/><Chip label={api.is_private?"PRIVATE":"PUBLIC"} variant="outlined"/><Chip label={api.http_method} variant="outlined"/></Box><Card><Tabs value={tab} onChange={(_,v)=>setTab(v)} variant="scrollable" scrollButtons="auto"><Tab label="Request contract"/><Tab label="Response scenarios"/><Tab label="Permissions"/><Tab label="Logs"/></Tabs><Divider/><CardContent sx={{p:{xs:2,md:3}}}>{tab===0&&<ContractEditor mockId={id} versionId={versionId}/>} {tab===1&&<ScenarioEditor mockId={id} versionId={versionId}/>} {tab===2&&<PermissionManager mockId={id}/>} {tab===3&&<LogsTable mockId={id} versionId={versionId}/>}</CardContent></Card></Box>}
